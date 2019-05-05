@@ -8,7 +8,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class NZZ extends Headline {
+public class NZZ extends Medium {
     private static String NAME = "Neue Zürcher Zeitung";
     private static String URL = "https://www.nzz.ch/";
     private static String URL_PREFIX = "https://www.nzz.ch";

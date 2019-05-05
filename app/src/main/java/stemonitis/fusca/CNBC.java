@@ -10,7 +10,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CNBC extends Headline {
+public class CNBC extends Medium {
     private static String NAME = "CNBC";
     private static String URL = "http://www.cnbc.com/";
     private static String URL_PREFIX = "http://www.cnbc.com";

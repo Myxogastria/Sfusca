@@ -10,7 +10,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class TechCrunch extends Headline {
+public class TechCrunch extends Medium {
     private static String NAME = "TechCrunch";
     private static String URL = "https://techcrunch.com";
     private static String URL_PREFIX = "";

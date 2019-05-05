@@ -10,7 +10,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Reuters extends Headline {
+public class Reuters extends Medium {
     private static String NAME = "Reuters";
     private static String URL = "https://www.reuters.com/theWire";
     private static String URL_PREFIX = "";

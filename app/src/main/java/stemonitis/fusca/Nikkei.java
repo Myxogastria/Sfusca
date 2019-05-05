@@ -10,7 +10,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Nikkei extends Headline {
+public class Nikkei extends Medium {
     private static String NAME = "日本経済新聞";
     private static String URL = "http://www.nikkei.com/news/category/";
     private static String URL_PREFIX = "http://www.nikkei.com";

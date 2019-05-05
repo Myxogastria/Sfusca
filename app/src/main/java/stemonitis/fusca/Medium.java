@@ -3,7 +3,7 @@ package stemonitis.fusca;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Headline {
+public abstract class Medium {
     protected static String DEFAULT_CONTENT = "Oops! No content.";
     protected List<Article> articles;
     protected boolean reloading = true;

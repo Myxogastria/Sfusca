@@ -7,23 +7,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AsyncReloader extends AsyncTask<Void, Void, Void>{
-    private List<Headline> headlines;
+    private List<Medium> media;
 
-    public AsyncReloader(List<Headline> headlines){
+    public AsyncReloader(List<Medium> media){
         Log.i("AsyncReloader", "constructor");
-        this.headlines = headlines;
+        this.media = media;
     }
 
-    public AsyncReloader(Headline headline){
-        headlines = new ArrayList<>();
-        headlines.add(headline);
+    public AsyncReloader(Medium medium){
+        media = new ArrayList<>();
+        media.add(medium);
     }
 
     @Override
     public Void doInBackground(Void... params){
         Log.i("AsyncReloader", "doInBackground");
-        for(Headline headline : headlines){
-            headline.reload();
+        for(Medium medium : media){
+            medium.reload();
         }
         return null;
     }

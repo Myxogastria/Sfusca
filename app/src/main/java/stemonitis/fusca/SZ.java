@@ -10,7 +10,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SZ extends Headline {
+public class SZ extends Medium {
     private static String NAME = "Süddeutche Zeitung";
     private static String URL = "http://www.sueddeutsche.de/news";
     private static String URL_PREFIX = "";

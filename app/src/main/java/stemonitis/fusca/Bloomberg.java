@@ -8,7 +8,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Bloomberg extends Headline {
+public class Bloomberg extends Medium {
     private static String NAME = "Bloomberg";
     private static String URL = "https://www.bloomberg.com/asia";
     private static String URL_PREFIX = "https://www.bloomberg.com";
