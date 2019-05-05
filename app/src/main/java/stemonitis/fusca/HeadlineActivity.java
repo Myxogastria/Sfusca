@@ -64,10 +64,6 @@ public final class HeadlineActivity extends AppCompatActivity {
      */
     private Handler reloadHandler = new Handler();
     private Handler uiHandler = new Handler();
-//private final Handler visibilityHandler = new Handler();
-//    private Handler mediaHandler = new Handler();
-//    private Handler scrollHandler = new Handler();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,28 +96,23 @@ public final class HeadlineActivity extends AppCompatActivity {
                     @Override
                     public void onPresumedClick(){
                         toggleUiVisibility();
-//                        mediaHandler.removeCallbacksAndMessages(null);
-//                        scrollHandler.removeCallbacksAndMessages(null);
                         uiHandler.removeCallbacksAndMessages(null);
                         toggle();
                         if (AUTO_HIDE && barsAreVisible) {
                             delayedHide(AUTO_HIDE_DELAY_MILLIS);
                         }
 
-//                        scrollHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
                         uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
                     }
 
                     @Override
                     public void onSwipeRight(){
-//                        mediaHandler.removeCallbacksAndMessages(null);
                         uiHandler.removeCallbacksAndMessages(null);
                         previousHeadline();
                     }
 
                     @Override
                     public void onSwipeLeft(){
-//                        mediaHandler.removeCallbacksAndMessages(null);
                         uiHandler.removeCallbacksAndMessages(null);
                         nextHeadline();
                     }
@@ -185,8 +176,6 @@ public final class HeadlineActivity extends AppCompatActivity {
                 };
                 headlineListView.setAdapter(adapter);
                 headlineIsSet = true;
-//                scrollHandler.removeCallbacksAndMessages(null);
-//                scrollHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
                 uiHandler.removeCallbacksAndMessages(null);
                 uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
             }else{
@@ -199,17 +188,14 @@ public final class HeadlineActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-//        mediaHandler.removeCallbacksAndMessages(null);
         uiHandler.removeCallbacksAndMessages(null);
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-//                scrollHandler.removeCallbacksAndMessages(null);
                 uiHandler.removeCallbacksAndMessages(null);
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-//                scrollHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
                 uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
                 break;
         }
@@ -234,12 +220,9 @@ public final class HeadlineActivity extends AppCompatActivity {
         public void run() {
             if (canScroll()) {
                 headlineListView.smoothScrollBy(scrollBy, DURATION);
-//                scrollHandler.removeCallbacks(this);
-//                scrollHandler.postDelayed(this, AUTO_SCROLL_DELAY);
                 uiHandler.removeCallbacks(this);
                 uiHandler.postDelayed(this, AUTO_SCROLL_DELAY);
             } else if(headlineIsSet){
-//                mediaHandler.postDelayed(new Runnable() {
                 uiHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -268,8 +251,6 @@ public final class HeadlineActivity extends AppCompatActivity {
         super.onResume();
         hideBars();
 
-//        scrollHandler.removeCallbacksAndMessages(null);
-//        scrollHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
         uiHandler.removeCallbacksAndMessages(null);
         uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
     }
@@ -337,8 +318,6 @@ public final class HeadlineActivity extends AppCompatActivity {
         barsAreVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
-//        visibilityHandler.removeCallbacks(mShowPart2Runnable);
-//        visibilityHandler.postDelayed(setVisibilityRunnable, UI_ANIMATION_DELAY);
         uiHandler.removeCallbacks(mShowPart2Runnable);
         uiHandler.postDelayed(setVisibilityRunnable, UI_ANIMATION_DELAY);
     }
@@ -348,8 +327,6 @@ public final class HeadlineActivity extends AppCompatActivity {
         barsAreVisible = true;
 
         // Schedule a runnable to display UI elements after a delay
-//        visibilityHandler.removeCallbacks(setVisibilityRunnable);
-//        visibilityHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
         uiHandler.removeCallbacks(setVisibilityRunnable);
         uiHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
     }
@@ -359,8 +336,6 @@ public final class HeadlineActivity extends AppCompatActivity {
      * previously scheduled calls.
      */
     private void delayedHide(int delayMillis) {
-//        visibilityHandler.removeCallbacks(hideBarsRunnable);
-//        visibilityHandler.postDelayed(hideBarsRunnable, delayMillis);
         uiHandler.removeCallbacks(hideBarsRunnable);
         uiHandler.postDelayed(hideBarsRunnable, delayMillis);
     }
@@ -374,11 +349,6 @@ public final class HeadlineActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_context_headline, menu);
         return true;
     }
-//    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo){
-//        super.onCreateContextMenu(menu, view, menuInfo);
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu_context_headline, menu);
-//    }
 
     private void previousHeadline(){
         if(!medium.isReloading()) {
@@ -394,7 +364,6 @@ public final class HeadlineActivity extends AppCompatActivity {
         }
         headlineIsSet = false;
         title.setText(medium.getName());
-//        scrollHandler.removeCallbacksAndMessages(null);
         uiHandler.removeCallbacksAndMessages(null);
         reloadHandler.removeCallbacksAndMessages(null);
         reloadHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
@@ -414,7 +383,6 @@ public final class HeadlineActivity extends AppCompatActivity {
         }
         headlineIsSet = false;
         title.setText(medium.getName());
-//        scrollHandler.removeCallbacksAndMessages(null);
         uiHandler.removeCallbacksAndMessages(null);
         reloadHandler.removeCallbacksAndMessages(null);
         reloadHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
@@ -428,7 +396,6 @@ public final class HeadlineActivity extends AppCompatActivity {
     }
 
     private void goToArticlesFrom(int index){
-//        scrollHandler.removeCallbacksAndMessages(null);
         uiHandler.removeCallbacksAndMessages(null);
 
         if(medium.getArticles().size()>0) {
@@ -447,7 +414,6 @@ public final class HeadlineActivity extends AppCompatActivity {
             intent.putStringArrayListExtra("contents", contents);
             startActivityForResult(intent, 0);
         }else{
-//            scrollHandler.removeCallbacksAndMessages(null);
             uiHandler.removeCallbacksAndMessages(null);
             nextHeadline();
         }
@@ -458,7 +424,6 @@ public final class HeadlineActivity extends AppCompatActivity {
         Log.i("onActivityResult", "aaa");
         super.onActivityResult(requestCode, resultCode, data);
         if(data.getBooleanExtra("nextHeadline", false)) {
-//            scrollHandler.removeCallbacksAndMessages(null);
             uiHandler.removeCallbacksAndMessages(null);
             nextHeadline();
         }
