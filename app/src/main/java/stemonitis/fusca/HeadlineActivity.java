@@ -54,7 +54,7 @@ public final class HeadlineActivity extends AppCompatActivity {
     private Medium medium;
     private TextView title;
     private ListView headlineListView;
-    private boolean headlineIsSet;
+    private boolean headlineIsReady;
 
     /**
      * 2 handlers are handled in this activity.
@@ -96,33 +96,26 @@ public final class HeadlineActivity extends AppCompatActivity {
                     @Override
                     public void onPresumedClick(){
                         toggleUiVisibility();
-                        uiHandler.removeCallbacksAndMessages(null);
-                        toggle();
-                        if (AUTO_HIDE && barsAreVisible) {
-                            delayedHide(AUTO_HIDE_DELAY_MILLIS);
-                        }
-
-                        uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
                     }
 
                     @Override
                     public void onSwipeRight(){
-                        uiHandler.removeCallbacksAndMessages(null);
                         previousHeadline();
                     }
 
                     @Override
                     public void onSwipeLeft(){
-                        uiHandler.removeCallbacksAndMessages(null);
                         nextHeadline();
                     }
                 };
         contentView.setOnTouchListener(mDelayHideTouchListener);
 
+        Log.i("test", "test");
         View.OnSystemUiVisibilityChangeListener actionBarHider =
                 new View.OnSystemUiVisibilityChangeListener(){
                     @Override
                     public void onSystemUiVisibilityChange(int visibility){
+                        Log.i("VisibilityChange", String.valueOf(visibility));
                         switch (visibility){
                             case View.SYSTEM_UI_FLAG_LOW_PROFILE:
                                 showBars();
@@ -134,6 +127,7 @@ public final class HeadlineActivity extends AppCompatActivity {
                         }
                     }
                 };
+        contentView.setOnSystemUiVisibilityChangeListener(actionBarHider);
 
 
         mediaList = new ArrayList<>();
@@ -155,7 +149,7 @@ public final class HeadlineActivity extends AppCompatActivity {
         headlineListView.setVerticalScrollBarEnabled(false);
         headlineListView.setOnItemClickListener(new ListItemClickListener());
 
-        headlineIsSet = false;
+        headlineIsReady = false;
         reloadHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
     }
 
@@ -175,11 +169,11 @@ public final class HeadlineActivity extends AppCompatActivity {
                     }
                 };
                 headlineListView.setAdapter(adapter);
-                headlineIsSet = true;
+                headlineIsReady = true;
                 uiHandler.removeCallbacksAndMessages(null);
                 uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
             }else{
-                headlineIsSet = false;
+                headlineIsReady = false;
                 reloadHandler.removeCallbacksAndMessages(null);
                 reloadHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
             }
@@ -222,7 +216,7 @@ public final class HeadlineActivity extends AppCompatActivity {
                 headlineListView.smoothScrollBy(scrollBy, DURATION);
                 uiHandler.removeCallbacks(this);
                 uiHandler.postDelayed(this, AUTO_SCROLL_DELAY);
-            } else if(headlineIsSet){
+            } else if(headlineIsReady){
                 uiHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -295,15 +289,17 @@ public final class HeadlineActivity extends AppCompatActivity {
     };
 
     private void toggleUiVisibility(){
-
-    }
-
-    private void toggle() {
+        uiHandler.removeCallbacksAndMessages(null);
         if (barsAreVisible) {
             hideBars();
         } else {
             showBars();
         }
+        if (AUTO_HIDE && barsAreVisible) {
+            delayedHide(AUTO_HIDE_DELAY_MILLIS);
+        }
+
+        uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
     }
 
     private void hideBars() {
@@ -362,7 +358,7 @@ public final class HeadlineActivity extends AppCompatActivity {
                 medium = mediaIterator.next();
             }
         }
-        headlineIsSet = false;
+        headlineIsReady = false;
         title.setText(medium.getName());
         uiHandler.removeCallbacksAndMessages(null);
         reloadHandler.removeCallbacksAndMessages(null);
@@ -381,7 +377,7 @@ public final class HeadlineActivity extends AppCompatActivity {
                 medium = mediaIterator.previous();
             }
         }
-        headlineIsSet = false;
+        headlineIsReady = false;
         title.setText(medium.getName());
         uiHandler.removeCallbacksAndMessages(null);
         reloadHandler.removeCallbacksAndMessages(null);
