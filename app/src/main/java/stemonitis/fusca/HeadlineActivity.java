@@ -68,7 +68,6 @@ public final class HeadlineActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         getSupportActionBar().hide();
@@ -78,7 +77,6 @@ public final class HeadlineActivity extends AppCompatActivity {
 // a general rule, you should design your app to hideBars the status bar whenever you
 // hideBars the navigation bar.
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-//                | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
 
         setContentView(R.layout.activity_headline);
@@ -116,14 +114,13 @@ public final class HeadlineActivity extends AppCompatActivity {
                     @Override
                     public void onSystemUiVisibilityChange(int visibility){
                         Log.i("VisibilityChange", String.valueOf(visibility));
-                        switch (visibility){
-                            case View.SYSTEM_UI_FLAG_LOW_PROFILE:
-                                showBars();
-                                break;
-                            case View.SYSTEM_UI_FLAG_HIDE_NAVIGATION:
-                            case View.SYSTEM_UI_FLAG_FULLSCREEN:
-                                hideBars();
-                                break;
+                        Log.i("LOW_PROFILE", String.valueOf(View.SYSTEM_UI_FLAG_LOW_PROFILE));
+                        Log.i("HIDE_NAVIGATION", String.valueOf(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION));
+                        Log.i("FULLSCREEN", String.valueOf(View.SYSTEM_UI_FLAG_FULLSCREEN));
+                        if (visibility == View.SYSTEM_UI_FLAG_VISIBLE){
+                            showBars();
+                        }else{
+                            hideBars();
                         }
                     }
                 };
@@ -214,7 +211,7 @@ public final class HeadlineActivity extends AppCompatActivity {
         public void run() {
             if (canScroll()) {
                 headlineListView.smoothScrollBy(scrollBy, DURATION);
-                uiHandler.removeCallbacks(this);
+                uiHandler.removeCallbacksAndMessages(null);
                 uiHandler.postDelayed(this, AUTO_SCROLL_DELAY);
             } else if(headlineIsReady){
                 uiHandler.postDelayed(new Runnable() {
@@ -271,8 +268,6 @@ public final class HeadlineActivity extends AppCompatActivity {
             // at compile-time and do nothing on earlier devices.
             contentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
@@ -314,7 +309,7 @@ public final class HeadlineActivity extends AppCompatActivity {
         barsAreVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
-        uiHandler.removeCallbacks(mShowPart2Runnable);
+        uiHandler.removeCallbacksAndMessages(null);
         uiHandler.postDelayed(setVisibilityRunnable, UI_ANIMATION_DELAY);
     }
 
@@ -323,7 +318,7 @@ public final class HeadlineActivity extends AppCompatActivity {
         barsAreVisible = true;
 
         // Schedule a runnable to display UI elements after a delay
-        uiHandler.removeCallbacks(setVisibilityRunnable);
+        uiHandler.removeCallbacksAndMessages(null);
         uiHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
     }
 
@@ -332,7 +327,7 @@ public final class HeadlineActivity extends AppCompatActivity {
      * previously scheduled calls.
      */
     private void delayedHide(int delayMillis) {
-        uiHandler.removeCallbacks(hideBarsRunnable);
+        uiHandler.removeCallbacksAndMessages(null);
         uiHandler.postDelayed(hideBarsRunnable, delayMillis);
     }
 
