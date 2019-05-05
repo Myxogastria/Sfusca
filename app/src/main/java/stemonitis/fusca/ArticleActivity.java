@@ -2,7 +2,6 @@ package stemonitis.fusca;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,70 +16,14 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class ArticleActivity extends AppCompatActivity {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = true;
-
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 2000;
-
-    /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
-     */
-    private static final int UI_ANIMATION_DELAY = 300;
-    private final Handler mHideHandler = new Handler();
-    private View mContentView;
-    private final Runnable mHidePart2Runnable = new Runnable() {
-        @SuppressLint("InlinedApi")
-        @Override
-        public void run() {
-            // Delayed removal of status and navigation bar
-
-            // Note that some of these constants are new as of API 16 (Jelly Bean)
-            // and API 19 (KitKat). It is safe to use them, as they are inlined
-            // at compile-time and do nothing on earlier devices.
-            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        }
-    };
-    private final Runnable mShowPart2Runnable = new Runnable() {
-        @Override
-        public void run() {
-            // Delayed display of UI elements
-            ActionBar actionBar = getActionBar();
-            if (actionBar != null) {
-                actionBar.show();
-            }
-        }
-    };
-    private boolean mVisible;
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
-        }
-    };
+public class ArticleActivity extends AbstractCommonActivity{
     /**
      * Touch listener to use for in-layout UI controls to delay hiding the
      * system UI. This is to prevent the jarring behavior of controls going away
@@ -89,8 +32,8 @@ public class ArticleActivity extends AppCompatActivity {
     private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
+            if (autoHide) {
+                delayedHide(autoHideDelayMillis);
             }
             return false;
         }
@@ -104,12 +47,10 @@ public class ArticleActivity extends AppCompatActivity {
     }
 
     private static final int FIRST_SCROLL_DELAY = 20000;
-    private static final int AUTO_SCROLL_DELAY = 10000;
 
     private View lArticle;
     private ScrollView svArticle;
     private ProgressBar pbArticle;
-    private Handler scrollHandler = new Handler();
     private int scrollBy;
     private boolean autoChange;
     private Iterator<Article> articleIterator;
@@ -135,17 +76,24 @@ public class ArticleActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_article);
 
-        mVisible = true;
-        mContentView = findViewById(R.id.lArticle);
+        contentView = findViewById(R.id.lArticle);
 
-        // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggle();
-            }
-        });
-        mContentView.setOnTouchListener(mDelayHideTouchListener);
+//        // Set up the user interaction to manually show or hide the system UI.
+//        contentView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                toggle();
+//            }
+//        });
+//        contentView.setOnTouchListener(new View.OnTouchListener() {
+//	        @Override
+//	        public boolean onTouch(View view, MotionEvent motionEvent) {
+//	            if (autoHide) {
+//	                delayedHide(autoHideDelayMillis);
+//	            }
+//	            return false;
+//	        }
+//	    });
 
         tvArticleTitle = findViewById(R.id.tvArticleTitle);
         tvArticle = findViewById(R.id.tvArticle);
@@ -172,6 +120,31 @@ public class ArticleActivity extends AppCompatActivity {
 
         tvArticleTitle.setText(presentArticle.getTitle());
         tvArticle.setText(presentArticle.getContent());
+
+	    autoScrollRunnable = new Runnable() {
+	        @Override
+	        public void run() {
+	            if(canScroll()){
+	                scrollBy = (svArticle.getChildAt(0).getMeasuredHeight() -
+	                        svArticle.getMeasuredHeight());
+	                scrollBy = lArticle.getHeight()/4;
+	                svArticle.smoothScrollBy(0, scrollBy);
+	                uiHandler.removeCallbacksAndMessages(null);
+	                uiHandler.postDelayed(this, autoScrollDelay);
+	            }else if (autoChange){
+	                if(articleIterator.hasNext()){
+	                    presentArticle = articleIterator.next();
+	                    redrawArticle();
+	                }else{
+	                    Log.i("finish", "aaa");
+	                    Intent data = new Intent();
+	                    data.putExtra("nextHeadline", true);
+	                    setResult(RESULT_OK, data);
+	                    finish();
+	                }
+	            }
+	        }
+	    };
 
         pbArticle = findViewById(R.id.pbArticle);
         svArticle = findViewById(R.id.svArticle);
@@ -206,37 +179,12 @@ public class ArticleActivity extends AppCompatActivity {
 
         lArticle = findViewById(R.id.lArticle);
 
-        scrollHandler.removeCallbacksAndMessages(null);
-        scrollHandler.postDelayed(autoScrollRunnable, FIRST_SCROLL_DELAY);
+        uiHandler.removeCallbacksAndMessages(null);
+        uiHandler.postDelayed(autoScrollRunnable, FIRST_SCROLL_DELAY);
     }
 
-    private final Runnable autoScrollRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if(canScroll()){
-                scrollBy = (svArticle.getChildAt(0).getMeasuredHeight() -
-                        svArticle.getMeasuredHeight());
-                scrollBy = lArticle.getHeight()/4;
-                svArticle.smoothScrollBy(0, scrollBy);
-                scrollHandler.removeCallbacksAndMessages(null);
-                scrollHandler.postDelayed(this, AUTO_SCROLL_DELAY);
-            }else if (autoChange){
-                if(articleIterator.hasNext()){
-                    presentArticle = articleIterator.next();
-                    redrawArticle();
-                }else{
-                    Log.i("finish", "aaa");
-                    Intent data = new Intent();
-                    data.putExtra("nextHeadline", true);
-                    setResult(RESULT_OK, data);
-                    finish();
-                }
-            }
-        }
-    };
-
     private void redrawArticle(){
-        scrollHandler.removeCallbacksAndMessages(null);
+        uiHandler.removeCallbacksAndMessages(null);
 
         tvArticleTitle.setText("");
         tvArticle.setText("");
@@ -249,57 +197,7 @@ public class ArticleActivity extends AppCompatActivity {
         pbArticle.setMax(svArticle.getChildAt(0).getMeasuredHeight() -
                 svArticle.getMeasuredHeight());
 
-        scrollHandler.postDelayed(autoScrollRunnable, FIRST_SCROLL_DELAY);
+        uiHandler.postDelayed(autoScrollRunnable, FIRST_SCROLL_DELAY);
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        hide();
-
-        scrollHandler.removeCallbacksAndMessages(null);
-        scrollHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
-    }
-
-    private void toggle() {
-        if (mVisible) {
-            hide();
-        } else {
-            show();
-        }
-    }
-
-    private void hide() {
-        // Hide UI first
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
-        mVisible = false;
-
-        // Schedule a runnable to remove the status and navigation bar after a delay
-        mHideHandler.removeCallbacks(mShowPart2Runnable);
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
-    }
-
-    @SuppressLint("InlinedApi")
-    private void show() {
-        // Show the system bar
-        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        mVisible = true;
-
-        // Schedule a runnable to display UI elements after a delay
-        mHideHandler.removeCallbacks(mHidePart2Runnable);
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
-    }
-
-    /**
-     * Schedules a call to hide() in delay milliseconds, canceling any
-     * previously scheduled calls.
-     */
-    private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
-    }
 }

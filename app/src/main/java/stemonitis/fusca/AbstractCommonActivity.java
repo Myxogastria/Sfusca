@@ -16,9 +16,10 @@ public abstract class AbstractCommonActivity extends AppCompatActivity {
     protected HideBarsRunnable hideBarsRunnable = new HideBarsRunnable();
     protected ShowActionBarRunnable showActionBarRunnable = new ShowActionBarRunnable();
 
+    protected Handler uiHandler = new Handler();
+
     // These fields must be set in the concrete class
     protected View contentView;
-    protected Handler uiHandler;
     protected Runnable autoScrollRunnable;
 
     /**

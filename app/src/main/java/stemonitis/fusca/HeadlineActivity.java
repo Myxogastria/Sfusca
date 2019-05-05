@@ -47,7 +47,6 @@ public final class HeadlineActivity extends AbstractCommonActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        uiHandler = new Handler();
 		autoScrollRunnable = new Runnable() {
 		        @Override
 		        public void run() {
@@ -292,10 +291,6 @@ public final class HeadlineActivity extends AbstractCommonActivity {
     @Override
     public void onResume(){
         super.onResume();
-        hideBars();
-
-        uiHandler.removeCallbacksAndMessages(null);
-        uiHandler.postDelayed(autoScrollRunnable, autoScrollDelay);
 
         isActive = true;
     }
