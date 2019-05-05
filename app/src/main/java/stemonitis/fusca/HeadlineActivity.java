@@ -2,7 +2,6 @@ package stemonitis.fusca;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,7 +46,7 @@ public final class HeadlineActivity extends AppCompatActivity {
     private View contentView;
 
     private static int AUTO_SCROLL_DELAY = 15000;
-    private static int DURATION = 1500;
+    private static int SCROLL_DURATION = 1500;
 
     private List<Medium> mediaList;
     private ListIterator<Medium> mediaIterator;
@@ -55,6 +54,7 @@ public final class HeadlineActivity extends AppCompatActivity {
     private TextView title;
     private ListView headlineListView;
     private boolean headlineIsReady;
+    private boolean isActive;
 
     /**
      * 2 handlers are handled in this activity.
@@ -89,8 +89,7 @@ public final class HeadlineActivity extends AppCompatActivity {
          * system UI. This is to prevent the jarring behavior of controls going away
          * while interacting with activity UI.
          */
-        View.OnTouchListener mDelayHideTouchListener =
-                new OnSwipeTouchListener(HeadlineActivity.this) {
+        contentView.setOnTouchListener(new OnSwipeTouchListener(HeadlineActivity.this) {
                     @Override
                     public void onPresumedClick(){
                         toggleUiVisibility();
@@ -105,26 +104,21 @@ public final class HeadlineActivity extends AppCompatActivity {
                     public void onSwipeLeft(){
                         nextHeadline();
                     }
-                };
-        contentView.setOnTouchListener(mDelayHideTouchListener);
+                });
 
-        Log.i("test", "test");
-        View.OnSystemUiVisibilityChangeListener actionBarHider =
-                new View.OnSystemUiVisibilityChangeListener(){
+        contentView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener(){
                     @Override
                     public void onSystemUiVisibilityChange(int visibility){
-                        Log.i("VisibilityChange", String.valueOf(visibility));
-                        Log.i("LOW_PROFILE", String.valueOf(View.SYSTEM_UI_FLAG_LOW_PROFILE));
-                        Log.i("HIDE_NAVIGATION", String.valueOf(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION));
-                        Log.i("FULLSCREEN", String.valueOf(View.SYSTEM_UI_FLAG_FULLSCREEN));
-                        if (visibility == View.SYSTEM_UI_FLAG_VISIBLE){
-                            showBars();
-                        }else{
-                            hideBars();
+                        if(isActive){
+                            Log.i("HeadlineActivity", "VisibilityChange" + String.valueOf(visibility));
+                            if (visibility == View.SYSTEM_UI_FLAG_VISIBLE){
+                                showBars();
+                            }else{
+                                hideBars();
+                            }
                         }
                     }
-                };
-        contentView.setOnSystemUiVisibilityChangeListener(actionBarHider);
+                });
 
 
         mediaList = new ArrayList<>();
@@ -144,10 +138,33 @@ public final class HeadlineActivity extends AppCompatActivity {
 
         headlineListView = findViewById(R.id.lvHeadline);
         headlineListView.setVerticalScrollBarEnabled(false);
-        headlineListView.setOnItemClickListener(new ListItemClickListener());
+        headlineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                goToArticlesFrom(position);
+            }
+        });
 
         headlineIsReady = false;
         reloadHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
+
+        isActive = true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_context_headline, menu);
+        return true;
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        // Trigger the initial hideBars() shortly after the activity has been
+        // created, to briefly hint to the user that UI controls
+        // are available.
+        delayedHide(100);
     }
 
     private static int RELOAD_CHECK_INTERVAL = 200;
@@ -194,26 +211,19 @@ public final class HeadlineActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
-    private int scrollBy=0;
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        // Trigger the initial hideBars() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide(100);
-    }
+    private int scrollBy=0; // set value in canScroll()
 
     private final Runnable autoScrollRunnable = new Runnable() {
         @Override
         public void run() {
             if (canScroll()) {
-                headlineListView.smoothScrollBy(scrollBy, DURATION);
+                headlineListView.smoothScrollBy(scrollBy, SCROLL_DURATION);
                 uiHandler.removeCallbacksAndMessages(null);
                 uiHandler.postDelayed(this, AUTO_SCROLL_DELAY);
             } else if(headlineIsReady){
+                Log.i("HeadlineActivity", "can't scroll");
+                uiHandler.removeCallbacksAndMessages(null);
                 uiHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -229,6 +239,7 @@ public final class HeadlineActivity extends AppCompatActivity {
                 - headlineListView.getFirstVisiblePosition();
         View c = headlineListView.getChildAt(lastIndex);
         if (c!=null){
+            // scroll distance is roughly the height of display
             scrollBy = c.getHeight() * lastIndex;
             return (headlineListView.getLastVisiblePosition() < headlineListView.getAdapter().getCount()-1)
                     || (c.getBottom() > headlineListView.getHeight());
@@ -237,25 +248,12 @@ public final class HeadlineActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        hideBars();
-
-        uiHandler.removeCallbacksAndMessages(null);
-        uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
-    }
 
     /**
-     * Visibility of bars (action bar, navigation bar, etc)
+     * Handle the visibility of bars (action bar, navigation bar, etc).
+     * Every process ends up with start of auto scroll.
      */
     private boolean barsAreVisible;
-    private final Runnable hideBarsRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hideBars();
-        }
-    };
 
     private final Runnable setVisibilityRunnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -268,59 +266,32 @@ public final class HeadlineActivity extends AppCompatActivity {
             // at compile-time and do nothing on earlier devices.
             contentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
         }
     };
-    private final Runnable mShowPart2Runnable = new Runnable() {
-        @Override
-        public void run() {
-            // Delayed display of UI elements
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.show();
-            }
-        }
-    };
-
-    private void toggleUiVisibility(){
-        uiHandler.removeCallbacksAndMessages(null);
-        if (barsAreVisible) {
-            hideBars();
-        } else {
-            showBars();
-        }
-        if (AUTO_HIDE && barsAreVisible) {
-            delayedHide(AUTO_HIDE_DELAY_MILLIS);
-        }
-
-        uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
-    }
 
     private void hideBars() {
         // Hide UI first
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            Log.i("hideBars", "not null");
-            actionBar.hide();
-        }else{
-            Log.i("hideBars", "null");
-        }
+        getSupportActionBar().hide();
         barsAreVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
         uiHandler.removeCallbacksAndMessages(null);
         uiHandler.postDelayed(setVisibilityRunnable, UI_ANIMATION_DELAY);
+        // -> autoScroll
     }
 
-    @SuppressLint("InlinedApi")
-    private void showBars() {
-        barsAreVisible = true;
-
-        // Schedule a runnable to display UI elements after a delay
-        uiHandler.removeCallbacksAndMessages(null);
-        uiHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
-    }
+    private final Runnable hideBarsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            hideBars();
+            // -> setVisibility -> autoScroll
+        }
+    };
 
     /**
      * Schedules a call to hideBars() in delay milliseconds, canceling any
@@ -329,17 +300,49 @@ public final class HeadlineActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         uiHandler.removeCallbacksAndMessages(null);
         uiHandler.postDelayed(hideBarsRunnable, delayMillis);
+        // -> setVisibility -> autoScroll
     }
+
+    private final Runnable showActionBarRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // Delayed display of UI elements
+            getSupportActionBar().show();
+            if (AUTO_HIDE) {
+                delayedHide(AUTO_HIDE_DELAY_MILLIS);
+                // -> hideBars -> setVisibility -> autoScroll
+            }else{
+                uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
+            }
+        }
+    };
+
+    @SuppressLint("InlinedApi")
+    private void showBars() {
+        barsAreVisible = true;
+
+        // Schedule a runnable to display UI elements after a delay
+        uiHandler.removeCallbacksAndMessages(null);
+        uiHandler.postDelayed(showActionBarRunnable, UI_ANIMATION_DELAY);
+        // -> ... -> autoScroll
+    }
+
+    private void toggleUiVisibility(){
+        uiHandler.removeCallbacksAndMessages(null);
+        if (barsAreVisible) {
+            hideBars();
+            // -> ... -> autoScroll
+        } else {
+            showBars();
+            // -> ... -> autoScroll
+        }
+    }
+
 
     private void headlineReload(){
         new AsyncReloader(mediaList).execute();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu_context_headline, menu);
-        return true;
-    }
 
     private void previousHeadline(){
         if(!medium.isReloading()) {
@@ -379,16 +382,9 @@ public final class HeadlineActivity extends AppCompatActivity {
         reloadHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
     }
 
-    private class ListItemClickListener implements AdapterView.OnItemClickListener{
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-            goToArticlesFrom(position);
-        }
-    }
 
     private void goToArticlesFrom(int index){
-        uiHandler.removeCallbacksAndMessages(null);
-
+        Log.i("HeadlineActivity", "goToArticlesFrom" + index);
         if(medium.getArticles().size()>0) {
             List<Article> aList = medium.getArticles().subList(index, medium.articles.size());
             ArrayList<String> titles = new ArrayList<>();
@@ -405,9 +401,27 @@ public final class HeadlineActivity extends AppCompatActivity {
             intent.putStringArrayListExtra("contents", contents);
             startActivityForResult(intent, 0);
         }else{
-            uiHandler.removeCallbacksAndMessages(null);
             nextHeadline();
         }
+    }
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        hideBars();
+
+        uiHandler.removeCallbacksAndMessages(null);
+        uiHandler.postDelayed(autoScrollRunnable, AUTO_SCROLL_DELAY);
+
+        isActive = true;
+    }
+
+    @Override
+    public void onPause(){
+        isActive = false;
+
+        super.onPause();
     }
 
     @Override
