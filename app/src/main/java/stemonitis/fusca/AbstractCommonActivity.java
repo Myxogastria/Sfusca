@@ -21,6 +21,10 @@ public abstract class AbstractCommonActivity extends AppCompatActivity {
     protected Handler uiHandler;
     protected Runnable autoScrollRunnable;
 
+    /**
+     * Handle the visibility of bars (action bar, navigation bar, etc).
+     * Every process ends up with start of auto scroll.
+     */
     protected class VisibilityRunnable implements Runnable{
         @Override
         public void run(){
