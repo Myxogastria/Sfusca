@@ -82,6 +82,11 @@ public final class HeadlineActivity extends AbstractCommonActivity {
 
         barsAreVisible = true;
         contentView = findViewById(R.id.lHeadline);
+        contentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         /**
          * Touch listener to use for in-layout UI controls to delay hiding the

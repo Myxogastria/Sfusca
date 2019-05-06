@@ -1,13 +1,8 @@
 package stemonitis.fusca;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -29,15 +24,6 @@ public class ArticleActivity extends AbstractCommonActivity{
      * system UI. This is to prevent the jarring behavior of controls going away
      * while interacting with activity UI.
      */
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (autoHide) {
-                delayedHide(autoHideDelayMillis);
-            }
-            return false;
-        }
-    };
 
     public void onFinishButtonClick(View view){
         Intent data = new Intent();
@@ -77,23 +63,12 @@ public class ArticleActivity extends AbstractCommonActivity{
         setContentView(R.layout.activity_article);
 
         contentView = findViewById(R.id.lArticle);
+        contentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
-//        // Set up the user interaction to manually show or hide the system UI.
-//        contentView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                toggle();
-//            }
-//        });
-//        contentView.setOnTouchListener(new View.OnTouchListener() {
-//	        @Override
-//	        public boolean onTouch(View view, MotionEvent motionEvent) {
-//	            if (autoHide) {
-//	                delayedHide(autoHideDelayMillis);
-//	            }
-//	            return false;
-//	        }
-//	    });
 
         tvArticleTitle = findViewById(R.id.tvArticleTitle);
         tvArticle = findViewById(R.id.tvArticle);
