@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menuRefresh"
-        android:icon="@drawable/ic_refresh"
-        android:title="@string/menu_refresh"
+        android:id="@+id/menuReload"
+        android:icon="@drawable/ic_reload"
+        android:title="@string/menu_reload"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/menuSettings"

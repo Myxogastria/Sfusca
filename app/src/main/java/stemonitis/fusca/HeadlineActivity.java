@@ -39,11 +39,11 @@ public final class HeadlineActivity extends AbstractCommonActivity {
 
     /**
      * 2 handlers are handled in this activity.
-     * reloadHandler handles reload of the news.
+     * headlineHandler handles reload of the news.
      * uiHandler (superclass) handles UIs, which include visibility of action bar,
      * switching the medium of headline, and scrolling of headline.
      */
-    private Handler reloadHandler = new Handler();
+    private Handler headlineHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,12 +102,12 @@ public final class HeadlineActivity extends AbstractCommonActivity {
 
                     @Override
                     public void onSwipeRight(){
-                        previousHeadline();
+                        previousMedium();
                     }
 
                     @Override
                     public void onSwipeLeft(){
-                        nextHeadline();
+                        nextMedium();
                     }
                 });
 
@@ -151,7 +151,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
         });
 
         headlineIsReady = false;
-        reloadHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
+        headlineHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
 
         isActive = true;
     }
@@ -165,9 +165,17 @@ public final class HeadlineActivity extends AbstractCommonActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
-            case R.id.menuRefresh:
-                Log.i(this.getClass().getSimpleName(), "Menu Refresh selected");
-                Toast.makeText(HeadlineActivity.this, "Refresh", Toast.LENGTH_SHORT).show();
+            case R.id.menuReload:
+                hideBars();
+                Log.i(this.getClass().getSimpleName(), "Menu Reload selected");
+                Toast.makeText(HeadlineActivity.this, R.string.tst_reload, Toast.LENGTH_SHORT).show();
+                if(!medium.isReloading()) {
+                    new AsyncReloader(medium).withExceptionToast(this).execute();
+                    headlineIsReady = false;
+                    title.setText(medium.getName());
+                    headlineHandler.removeCallbacksAndMessages(null);
+                    headlineHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
+                }
                 break;
             case R.id.menuSettings:
                 Log.i(this.getClass().getSimpleName(), "Menu Settings selected");
@@ -208,8 +216,8 @@ public final class HeadlineActivity extends AbstractCommonActivity {
                 uiHandler.postDelayed(autoScrollRunnable, autoScrollDelay);
             }else{
                 headlineIsReady = false;
-                reloadHandler.removeCallbacksAndMessages(null);
-                reloadHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
+                headlineHandler.removeCallbacksAndMessages(null);
+                headlineHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
             }
         }
     };
@@ -247,7 +255,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
     }
 
 
-    private void previousHeadline(){
+    private void previousMedium(){
         if(!medium.isReloading()) {
             Medium medium0 = medium;
             new AsyncReloader(medium0).withExceptionToast(this).execute();
@@ -262,11 +270,11 @@ public final class HeadlineActivity extends AbstractCommonActivity {
         headlineIsReady = false;
         title.setText(medium.getName());
         uiHandler.removeCallbacksAndMessages(null);
-        reloadHandler.removeCallbacksAndMessages(null);
-        reloadHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
+        headlineHandler.removeCallbacksAndMessages(null);
+        headlineHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
     }
 
-    private void nextHeadline(){
+    private void nextMedium(){
         if(!medium.isReloading()) {
             Medium medium0 = medium;
             new AsyncReloader(medium0).withExceptionToast(this).execute();
@@ -281,8 +289,8 @@ public final class HeadlineActivity extends AbstractCommonActivity {
         headlineIsReady = false;
         title.setText(medium.getName());
         uiHandler.removeCallbacksAndMessages(null);
-        reloadHandler.removeCallbacksAndMessages(null);
-        reloadHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
+        headlineHandler.removeCallbacksAndMessages(null);
+        headlineHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
     }
 
 
@@ -304,7 +312,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
             intent.putStringArrayListExtra("contents", contents);
             startActivityForResult(intent, 0);
         }else{
-            nextHeadline();
+            nextMedium();
         }
     }
 
@@ -327,9 +335,9 @@ public final class HeadlineActivity extends AbstractCommonActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("onActivityResult", "aaa");
         super.onActivityResult(requestCode, resultCode, data);
-        if(data.getBooleanExtra("nextHeadline", false)) {
+        if(data.getBooleanExtra("nextMedium", false)) {
             uiHandler.removeCallbacksAndMessages(null);
-            nextHeadline();
+            nextMedium();
         }
     }
 

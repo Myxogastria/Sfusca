@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Sfusca</string>
 
-    <string name="menu_refresh">再読み込み</string>
+    <string name="menu_reload">再読み込み</string>
     <string name="menu_settings">設定</string>
     <string name="tst_reload_err">%1$sの読み込みに失敗しました\n%2$s</string>
-    <string name="tst_double_reload">読み込み中です</string>
+    <string name="tst_reload">再読み込み</string>
 
     <string name="title_activity_article">Article</string>
 </resources>
