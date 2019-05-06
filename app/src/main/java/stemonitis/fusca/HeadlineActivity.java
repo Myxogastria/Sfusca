@@ -1,12 +1,11 @@
 package stemonitis.fusca;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,6 +92,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
                     @Override
                     public void onPresumedClick(){
                         toggleUiVisibility();
+                        Toast.makeText(HeadlineActivity.this, "onPresumedClick()", Toast.LENGTH_SHORT);
                     }
 
                     @Override
@@ -125,7 +126,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
         mediaList.add(new Reuters(10));
         mediaList.add(new SZ(10));
         mediaList.add(new TechCrunch(10));
-        new AsyncReloader(mediaList).execute();
+        new AsyncReloader(mediaList).withExceptionToast(this).execute();
 
         mediaIterator = mediaList.listIterator();
         if(mediaIterator.hasNext()) {
@@ -152,7 +153,22 @@ public final class HeadlineActivity extends AbstractCommonActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu_context_headline, menu);
+        getMenuInflater().inflate(R.menu.menu_headline, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.menuRefresh:
+                Log.i(this.getClass().getSimpleName(), "Menu Refresh selected");
+                Toast.makeText(HeadlineActivity.this, "Refresh", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menuSettings:
+                Log.i(this.getClass().getSimpleName(), "Menu Settings selected");
+                Toast.makeText(HeadlineActivity.this, "Settings", Toast.LENGTH_SHORT).show();
+                break;
+        }
         return true;
     }
 
@@ -229,7 +245,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
     private void previousHeadline(){
         if(!medium.isReloading()) {
             Medium medium0 = medium;
-            new AsyncReloader(medium0).execute();
+            new AsyncReloader(medium0).withExceptionToast(this).execute();
         }
         if (mediaIterator.hasPrevious()) {
             medium = mediaIterator.previous();
@@ -248,7 +264,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
     private void nextHeadline(){
         if(!medium.isReloading()) {
             Medium medium0 = medium;
-            new AsyncReloader(medium0).execute();
+            new AsyncReloader(medium0).withExceptionToast(this).execute();
         }
         if (mediaIterator.hasNext()) {
             medium = mediaIterator.next();
@@ -311,4 +327,5 @@ public final class HeadlineActivity extends AbstractCommonActivity {
             nextHeadline();
         }
     }
+
 }

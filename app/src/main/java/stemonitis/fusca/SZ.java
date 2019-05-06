@@ -31,7 +31,7 @@ public class SZ extends Medium {
     }
 
     @Override
-    public void reload() {
+    public void reload() throws IOException{
         Log.i("SZ", "reload");
         reloading = true;
         try{
@@ -51,8 +51,8 @@ public class SZ extends Medium {
             }
             Log.i("SZ", "reloaded");
         }catch (IOException e){
-            e.printStackTrace();
             Log.i("SZ", "exception occurred");
+            throw e;
         }finally {
             reloading = false;
         }

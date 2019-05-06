@@ -31,7 +31,7 @@ public class Reuters extends Medium {
     }
 
     @Override
-    public void reload() {
+    public void reload() throws IOException{
         Log.i(NAME, "reload");
         reloading = true;
 
@@ -50,8 +50,8 @@ public class Reuters extends Medium {
 
             Log.i(NAME, "reloaded");
         }catch (IOException e){
-            e.printStackTrace();
             Log.i(NAME, "exception occurred");
+            throw e;
         }finally {
             reloading = false;
         }

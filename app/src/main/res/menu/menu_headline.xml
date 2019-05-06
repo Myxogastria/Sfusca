@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/ctxRefresh"
+        android:id="@+id/menuRefresh"
         android:icon="@drawable/ic_refresh"
-        android:title="@string/ctx_refresh"
+        android:title="@string/menu_refresh"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/ctxSettings"
+        android:id="@+id/menuSettings"
         android:icon="@drawable/ic_settings"
-        android:title="@string/ctx_settings"
+        android:title="@string/menu_settings"
         app:showAsAction="ifRoom"/>
 
 </menu>

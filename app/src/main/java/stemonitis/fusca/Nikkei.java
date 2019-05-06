@@ -31,7 +31,7 @@ public class Nikkei extends Medium {
     }
 
     @Override
-    public void reload(){
+    public void reload() throws IOException {
         Log.i("Nikkei", "reload");
         reloading = true;
 
@@ -60,8 +60,8 @@ public class Nikkei extends Medium {
             }
             Log.i("Nikkei", "reloaded");
         }catch (IOException e){
-            e.printStackTrace();
             Log.i("Nikkei", "exception occurred");
+            throw e;
         }finally {
             reloading = false;
         }
