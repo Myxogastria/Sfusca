@@ -54,8 +54,11 @@ public final class HeadlineActivity extends AbstractCommonActivity {
 		                headlineListView.smoothScrollBy(scrollBy, SCROLL_DURATION);
 		                uiHandler.removeCallbacksAndMessages(null);
 		                uiHandler.postDelayed(this, autoScrollDelay);
-		            } else if(headlineIsReady){
-		                Log.i("HeadlineActivity", "can't scroll");
+		            } else if(!isActive) {
+                        uiHandler.removeCallbacksAndMessages(null);
+                        uiHandler.postDelayed(this, autoScrollDelay);
+                    } else if(headlineIsReady){
+                        Log.i("HeadlineActivity", "can't scroll");
 		                uiHandler.removeCallbacksAndMessages(null);
 		                uiHandler.postDelayed(new Runnable() {
 		                    @Override
@@ -127,10 +130,10 @@ public final class HeadlineActivity extends AbstractCommonActivity {
 
 
         mediaList = new ArrayList<>();
-        mediaList.add(new Nikkei(20));
-        mediaList.add(new Reuters(10));
-        mediaList.add(new SZ(10));
-        mediaList.add(new TechCrunch(10));
+        mediaList.add(new Nikkei(10));
+        mediaList.add(new Reuters(5));
+        mediaList.add(new SZ(5));
+        mediaList.add(new TechCrunch(5));
         new AsyncReloader(mediaList).withExceptionToast(this).execute();
 
         mediaIterator = mediaList.listIterator();
@@ -178,8 +181,11 @@ public final class HeadlineActivity extends AbstractCommonActivity {
                 }
                 break;
             case R.id.menuSettings:
+                isActive = false;
                 Log.i(this.getClass().getSimpleName(), "Menu Settings selected");
-                Toast.makeText(HeadlineActivity.this, "Settings", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(HeadlineActivity.this, SettingsActivity.class);
+                uiHandler.removeCallbacksAndMessages(null);
+                startActivity(intent);
                 break;
         }
         return true;
@@ -320,6 +326,12 @@ public final class HeadlineActivity extends AbstractCommonActivity {
     @Override
     public void onResume(){
         super.onResume();
+
+        contentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         isActive = true;
     }

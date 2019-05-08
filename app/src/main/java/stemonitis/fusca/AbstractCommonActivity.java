@@ -10,7 +10,7 @@ public abstract class AbstractCommonActivity extends AppCompatActivity {
     protected int autoHideDelayMillis = 2000;
     protected int uiAnimationDelay = 300;
     protected boolean barsAreVisible = false;
-    protected int autoScrollDelay = 15000;
+    protected int autoScrollDelay = 5000;
 
     protected VisibilityRunnable visibilityRunnable = new VisibilityRunnable();
     protected HideBarsRunnable hideBarsRunnable = new HideBarsRunnable();

@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".SettingsActivity"></activity>
         <activity
             android:name=".HeadlineActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -27,7 +28,7 @@
             android:name=".ArticleActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_article"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
     </application>
 
 </manifest>

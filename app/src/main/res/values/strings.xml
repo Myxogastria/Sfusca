@@ -1,10 +1,27 @@
 <resources>
     <string name="app_name">Sfusca</string>
+    <string name="title_activity_article">Article</string>
 
     <string name="menu_reload">再読み込み</string>
     <string name="menu_settings">設定</string>
     <string name="tst_reload_err">%1$sの読み込みに失敗しました\n%2$s</string>
     <string name="tst_reload">再読み込み</string>
 
-    <string name="title_activity_article">Article</string>
+    <string name="settings_media">メディア設定</string>
+
+    <string name="settings_autoScrollDelay">スクロール時間間隔</string>
+    <string name="value_autoScrollDelay">%1$dミリ秒</string>
+
+    <string name="settings_SCROLL_DURATION">スクロール所要時間</string>
+    <string name="value_SCROLL_DURATION">%1$dミリ秒</string>
+
+    <string name="settings_scrollBy">スクロール距離</string>
+    <string name="value_scrollBy">およそ%1$d画面分</string>
+
+    <string name="settings_media_font_size">メディア名フォントサイズ</string>
+    <string name="value_media_font_size">%1$d</string>
+
+    <string name="settings_headline_font_size">ヘッドラインフォントサイズ</string>
+    <string name="value_headline_font_size">%1$d</string>
+
 </resources>
