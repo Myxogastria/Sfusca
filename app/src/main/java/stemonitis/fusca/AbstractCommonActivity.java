@@ -12,7 +12,6 @@ public abstract class AbstractCommonActivity extends AppCompatActivity {
     protected boolean barsAreVisible = false;
     protected int autoScrollDelay = 5000;
 
-    protected VisibilityRunnable visibilityRunnable = new VisibilityRunnable();
     protected HideBarsRunnable hideBarsRunnable = new HideBarsRunnable();
     protected ShowActionBarRunnable showActionBarRunnable = new ShowActionBarRunnable();
 
@@ -26,18 +25,6 @@ public abstract class AbstractCommonActivity extends AppCompatActivity {
      * Handle the visibility of bars (action bar, navigation bar, etc).
      * Every process ends up with start of auto scroll.
      */
-    protected class VisibilityRunnable implements Runnable{
-        @Override
-        public void run(){
-            contentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-            uiHandler.postDelayed(autoScrollRunnable, autoScrollDelay);
-        }
-    }
-
     protected void hideBars(){
         // Hide UI first
         getSupportActionBar().hide();
@@ -45,7 +32,12 @@ public abstract class AbstractCommonActivity extends AppCompatActivity {
 
         // Schedule a runnable to remove the status and navigation bar after a delay
         uiHandler.removeCallbacksAndMessages(null);
-        uiHandler.postDelayed(visibilityRunnable, uiAnimationDelay);
+        contentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        uiHandler.postDelayed(autoScrollRunnable, autoScrollDelay);
         // -> autoScroll
     }
 
