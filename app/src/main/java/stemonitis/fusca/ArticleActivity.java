@@ -113,7 +113,7 @@ public class ArticleActivity extends AbstractCommonActivity{
 	                }else{
 	                    Log.i("finish", "aaa");
 	                    Intent data = new Intent();
-	                    data.putExtra("nextHeadline", true);
+	                    data.putExtra("nextMedium", true);
 	                    setResult(RESULT_OK, data);
 	                    finish();
 	                }
