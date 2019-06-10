@@ -44,6 +44,19 @@ public class ArticleActivity extends AbstractCommonActivity{
     private TextView tvArticleTitle;
     private TextView tvArticle;
 
+    private View contentView;
+    private Runnable autoScrollRunnable;
+
+    @Override
+    protected View getContentView(){
+        return contentView;
+    }
+
+    @Override
+    protected Runnable getAutoScrollRunnable(){
+        return autoScrollRunnable;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

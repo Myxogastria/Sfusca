@@ -17,9 +17,8 @@ public abstract class AbstractCommonActivity extends AppCompatActivity {
 
     protected Handler uiHandler = new Handler();
 
-    // These fields must be set in the concrete class
-    protected View contentView;
-    protected Runnable autoScrollRunnable;
+    abstract protected View getContentView();
+    abstract protected Runnable getAutoScrollRunnable();
 
     /**
      * Handle the visibility of bars (action bar, navigation bar, etc).
@@ -32,12 +31,12 @@ public abstract class AbstractCommonActivity extends AppCompatActivity {
 
         // Schedule a runnable to remove the status and navigation bar after a delay
         uiHandler.removeCallbacksAndMessages(null);
-        contentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+        getContentView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        uiHandler.postDelayed(autoScrollRunnable, autoScrollDelay);
+        uiHandler.postDelayed(getAutoScrollRunnable(), autoScrollDelay);
         // -> autoScroll
     }
 
@@ -63,7 +62,7 @@ public abstract class AbstractCommonActivity extends AppCompatActivity {
                 delayedHide(autoHideDelayMillis);
                 // -> hideBars -> setVisibility -> autoScroll
             }else{
-                uiHandler.postDelayed(autoScrollRunnable, autoScrollDelay);
+                uiHandler.postDelayed(getAutoScrollRunnable(), autoScrollDelay);
             }
         }
     }
@@ -94,6 +93,6 @@ public abstract class AbstractCommonActivity extends AppCompatActivity {
 
         hideBars();
         uiHandler.removeCallbacksAndMessages(null);
-        uiHandler.postDelayed(autoScrollRunnable, autoScrollDelay);
+        uiHandler.postDelayed(getAutoScrollRunnable(), autoScrollDelay);
     }
 }

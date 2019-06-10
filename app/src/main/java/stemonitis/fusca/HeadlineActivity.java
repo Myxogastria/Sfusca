@@ -45,6 +45,19 @@ public final class HeadlineActivity extends AbstractCommonActivity {
      */
     private Handler headlineHandler = new Handler();
 
+    private View contentView;
+    private Runnable autoScrollRunnable;
+
+    @Override
+    protected View getContentView(){
+        return contentView;
+    }
+
+    @Override
+    protected Runnable getAutoScrollRunnable(){
+        return autoScrollRunnable;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 		autoScrollRunnable = new Runnable() {
