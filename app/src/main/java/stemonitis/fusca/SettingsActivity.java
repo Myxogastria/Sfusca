@@ -21,7 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        settingsType = intent.getIntExtra(getString(R.string.settings_type), -1);
+        settingsType = intent.getIntExtra(getString(R.string.intent_settingsType), -1);
 
         setContentView(R.layout.activity_settings);
         PreferenceFragmentCompat preferenceFragment = null;

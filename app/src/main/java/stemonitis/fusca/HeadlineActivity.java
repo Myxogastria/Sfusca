@@ -1,6 +1,7 @@
 package stemonitis.fusca;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.preference.PreferenceManager;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -26,7 +29,7 @@ import java.util.ListIterator;
  * status bar and navigation/system bar) with user interaction.
  */
 public final class HeadlineActivity extends AbstractCommonActivity {
-    private static int SCROLL_DURATION = 1500;
+    private int scrollDuration;
 
     private List<Medium> mediaList;
     private ListIterator<Medium> mediaIterator;
@@ -35,7 +38,13 @@ public final class HeadlineActivity extends AbstractCommonActivity {
     private ListView headlineListView;
     private boolean headlineIsReady;
     private boolean isActive = false;
-    private int scrollBy = 0; // set value in canScroll()
+
+    private int scrollBy;
+    private static final int SCROLL_BY_DIVIDER = 10;
+    private int scrollDistance = 0; // set value in canScroll()
+
+    private int mediaFontSize;
+    private int headlineFontSize;
 
     /**
      * 2 handlers are handled in this activity.
@@ -60,11 +69,14 @@ public final class HeadlineActivity extends AbstractCommonActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PreferenceManager.setDefaultValues(this, R.xml.preferences_main, false);
+        loadPreference();
+
 		autoScrollRunnable = new Runnable() {
 		        @Override
 		        public void run() {
 		            if (canScroll()) {
-		                headlineListView.smoothScrollBy(scrollBy, SCROLL_DURATION);
+		                headlineListView.smoothScrollBy(scrollDistance, scrollDuration);
 		                uiHandler.removeCallbacksAndMessages(null);
 		                uiHandler.postDelayed(this, autoScrollDelay);
 		            } else if(!isActive) {
@@ -156,6 +168,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
 
         title = findViewById(R.id.tvHeadlineTitle);
         title.setText(medium.getName());
+        title.setTextSize(mediaFontSize);
 
         headlineListView = findViewById(R.id.lvHeadline);
         headlineListView.setVerticalScrollBarEnabled(false);
@@ -170,6 +183,20 @@ public final class HeadlineActivity extends AbstractCommonActivity {
         headlineHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
 
         isActive = true;
+    }
+
+    private void loadPreference(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        autoScrollDelay = sharedPreferences.getInt(
+                getString(R.string.pref_autoScrollDelay), -1)*100;
+        scrollDuration = sharedPreferences.getInt(
+                getString(R.string.pref_scrollDuration), -1)*100;
+        scrollBy = sharedPreferences.getInt(
+                getString(R.string.pref_scrollBy), -1);
+        mediaFontSize = sharedPreferences.getInt(
+                getString(R.string.pref_mediaFontSize), -1);
+        headlineFontSize = sharedPreferences.getInt(
+                getString(R.string.pref_headlineFontSize), -1);
     }
 
     @Override
@@ -197,7 +224,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
                 isActive = false;
                 Log.i(this.getClass().getSimpleName(), "Menu Settings selected");
                 Intent intent = new Intent(HeadlineActivity.this, SettingsActivity.class);
-                intent.putExtra(getString(R.string.settings_type), SettingsActivity.MAIN);
+                intent.putExtra(getString(R.string.intent_settingsType), SettingsActivity.MAIN);
                 uiHandler.removeCallbacksAndMessages(null);
                 startActivity(intent);
                 break;
@@ -226,7 +253,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
                         TextView view = (TextView)super.getView(position, convertView, parent);
-                        view.setTextSize( 45 );
+                        view.setTextSize( headlineFontSize );
                         return view;
                     }
                 };
@@ -266,7 +293,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
         View c = headlineListView.getChildAt(lastIndex);
         if (c!=null){
             // scroll distance is roughly the height of display
-            scrollBy = c.getHeight() * lastIndex;
+            scrollDistance = c.getHeight() * lastIndex * scrollBy / SCROLL_BY_DIVIDER;
             return (headlineListView.getLastVisiblePosition() < headlineListView.getAdapter().getCount()-1)
                     || (c.getBottom() > headlineListView.getHeight());
         }else{
@@ -340,6 +367,9 @@ public final class HeadlineActivity extends AbstractCommonActivity {
     @Override
     public void onResume(){
         super.onResume();
+
+        loadPreference();
+        title.setTextSize(mediaFontSize);
 
         isActive = true;
     }

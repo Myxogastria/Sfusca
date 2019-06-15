@@ -7,7 +7,7 @@
     <string name="tst_reload_err">%1$sの読み込みに失敗しました\n%2$s</string>
     <string name="tst_reload">再読み込み</string>
 
-    <string name="settings_type"><xliff:g id="settings_type">settingsType</xliff:g></string>
+    <string name="intent_settingsType"><xliff:g id="settingsType">settingsType</xliff:g></string>
 
     <string name="pref_category_headline">ヘッドライン表示</string>
 
