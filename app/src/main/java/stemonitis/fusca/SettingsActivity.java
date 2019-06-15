@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 
 public class SettingsActivity extends AppCompatActivity {
-    private String settingsType;
+    public static final int MAIN = 0;
+
+    private int settingsType;
 
     private Medium medium;
 
@@ -18,18 +20,15 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        settingsType = "";
         Intent intent = getIntent();
-        if(intent != null){
-            settingsType = intent.getStringExtra("settingsType");
-        }
+        settingsType = intent.getIntExtra(getString(R.string.settings_type), -1);
 
-//        setContentView(R.layout.settings_activity);
-//        PreferenceFragmentCompat preferenceFragment = null;
-//        switch (settingsType){
-//            case "root":
-//                preferenceFragment = new SettingsFragment();
-//                break;
+        setContentView(R.layout.activity_settings);
+        PreferenceFragmentCompat preferenceFragment = null;
+        switch (settingsType){
+            case MAIN:
+                preferenceFragment = new MainSettingsFragment();
+                break;
 //            case "medium":
 //                Log.i("SettingsActivity", "onCreate, case medium");
 //                String profile = intent.getStringExtra("medium_profile");
@@ -41,13 +40,13 @@ public class SettingsActivity extends AppCompatActivity {
 //                }else{
 //                    finish();
 //                }
-//        }
-//        if (preferenceFragment != null){
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .replace(R.id.settings, preferenceFragment)
-//                    .commit();
-//        }
+        }
+        if (preferenceFragment != null){
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.settings, preferenceFragment)
+                    .commit();
+        }
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

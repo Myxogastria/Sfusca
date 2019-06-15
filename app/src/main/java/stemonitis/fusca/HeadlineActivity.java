@@ -196,7 +196,8 @@ public final class HeadlineActivity extends AbstractCommonActivity {
             case R.id.menuSettings:
                 isActive = false;
                 Log.i(this.getClass().getSimpleName(), "Menu Settings selected");
-                Intent intent = new Intent(HeadlineActivity.this, SettingsActivityX.class);
+                Intent intent = new Intent(HeadlineActivity.this, SettingsActivity.class);
+                intent.putExtra(getString(R.string.settings_type), SettingsActivity.MAIN);
                 uiHandler.removeCallbacksAndMessages(null);
                 startActivity(intent);
                 break;

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Sfusca</string>
     <string name="title_activity_article">Article</string>
 
@@ -7,21 +7,27 @@
     <string name="tst_reload_err">%1$sの読み込みに失敗しました\n%2$s</string>
     <string name="tst_reload">再読み込み</string>
 
-    <string name="settings_media">メディア設定</string>
+    <string name="settings_type"><xliff:g id="settings_type">settingsType</xliff:g></string>
 
-    <string name="settings_autoScrollDelay">スクロール時間間隔</string>
-    <string name="value_autoScrollDelay">%1$dミリ秒</string>
+    <string name="pref_category_headline">ヘッドライン表示</string>
 
-    <string name="settings_SCROLL_DURATION">スクロール所要時間</string>
-    <string name="value_SCROLL_DURATION">%1$dミリ秒</string>
+    <string name="pref_media"><xliff:g id="media">media</xliff:g></string>
+    <string name="pref_title_media">メディア設定</string>
 
-    <string name="settings_scrollBy">スクロール距離</string>
-    <string name="value_scrollBy">およそ%1$d画面分</string>
+    <string name="pref_autoScrollDelay"><xliff:g id="autoScrollDelay">autoScrollDelay</xliff:g></string>
+    <string name="pref_title_autoScrollDelay">スクロール時間間隔（単位：100ミリ秒）</string>
 
-    <string name="settings_media_font_size">メディア名フォントサイズ</string>
-    <string name="value_media_font_size">%1$d</string>
+    <string name="pref_scrollDuration"><xliff:g id="scrollDuration">scrollDuration</xliff:g></string>
+    <string name="pref_title_scrollDuration">スクロール所要時間（単位：100ミリ秒）</string>
 
-    <string name="settings_headline_font_size">ヘッドラインフォントサイズ</string>
-    <string name="value_headline_font_size">%1$d</string>
+    <string name="pref_scrollBy"><xliff:g id="scrollBy">scrollBy</xliff:g></string>
+    <string name="pref_title_scrollBy">スクロール距離（単位：0.1画面）</string>
+
+    <string name="pref_mediaFontSize"><xliff:g id="mediaFontSize">mediaFontSize</xliff:g></string>
+    <string name="pref_title_mediaFontSize">メディア名フォントサイズ（単位：sp）</string>
+
+    <string name="pref_headlineFontSize"><xliff:g id="headlineFontSize">headlineFontSize</xliff:g></string>
+    <string name="pref_title_headlineFontSize">ヘッドラインフォントサイズ（単位：sp）</string>
+
 
 </resources>
