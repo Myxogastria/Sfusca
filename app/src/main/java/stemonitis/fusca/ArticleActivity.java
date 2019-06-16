@@ -116,6 +116,7 @@ public class ArticleActivity extends AbstractCommonActivity{
 	                scrollBy = (svArticle.getChildAt(0).getMeasuredHeight() -
 	                        svArticle.getMeasuredHeight());
 	                scrollBy = lArticle.getHeight()/4;
+//	                this is different from AbsListView#smoothScrollBy
 	                svArticle.smoothScrollBy(0, scrollBy);
 	                uiHandler.removeCallbacksAndMessages(null);
 	                uiHandler.postDelayed(this, autoScrollDelay);

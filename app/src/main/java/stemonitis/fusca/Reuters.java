@@ -9,28 +9,33 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Reuters extends Medium {
+public class Reuters {
     private static String NAME = "Reuters";
     private static String URL = "https://www.reuters.com/theWire";
     private static String URL_PREFIX = "";
     private int maxSize = 5;
 
-    public Reuters(){
-        super();
-    }
+    private boolean reloading;
+    private List<Article> articles;
+    private String DEFAULT_CONTENT;
 
-    public Reuters(int maxSize){
-        super();
-        this.maxSize = maxSize;
-    }
+//    public Reuters(){
+//        super();
+//    }
+//
+//    public Reuters(int maxSize){
+//        super();
+//        this.maxSize = maxSize;
+//    }
 
-    @Override
+//    @Override
     public String getName() {
         return NAME;
     }
 
-    @Override
+//    @Override
     public void reload() throws IOException{
         Log.i(NAME, "reload");
         reloading = true;

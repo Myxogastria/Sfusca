@@ -1,16 +1,40 @@
 package stemonitis.fusca;
 
+import androidx.preference.PreferenceFragmentCompat;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Medium {
+    protected final int id;
+
     protected static String DEFAULT_CONTENT = "Oops! No content.";
     protected List<Article> articles = new ArrayList<>();
     protected boolean reloading = true;
+    protected Map<String, Integer> articlePreferences = null;
 
+    protected Medium(int id){
+        this.id = id;
+    }
+
+    public abstract String getProfileString();
+    public abstract PreferenceFragmentCompat getSettingsFragment();
     public abstract String getName();
     public abstract void reload() throws IOException;
+
+    public int getId(){
+        return id;
+    }
+
+    public String getNameInSettings(){
+        return getName();
+    };
+
+    public String getNameInHeadline(){
+        return getName();
+    };
 
     public List<String> getList(){
         List<String> headlines = new ArrayList<>();
@@ -27,4 +51,13 @@ public abstract class Medium {
     public boolean isReloading(){
         return reloading;
     };
+
+    public Map<String, Integer> getArticlePreferences(){
+        return articlePreferences;
+    };
+
+    protected String getString(int resId){
+        return ContextGetter.getContext().getString(resId);
+    }
+
 }

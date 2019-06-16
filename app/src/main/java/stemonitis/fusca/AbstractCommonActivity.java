@@ -6,6 +6,7 @@ import android.os.Handler;
 
 
 public abstract class AbstractCommonActivity extends AppCompatActivity {
+//    change to private fields and protected getter/setter
     protected boolean autoHide = true;
     protected int autoHideDelayMillis = 2000;
     protected int uiAnimationDelay = 300;

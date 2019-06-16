@@ -11,6 +11,7 @@ import androidx.preference.PreferenceFragmentCompat;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final int MAIN = 0;
+    public static final int MEDIUM = 1;
 
     private int settingsType;
 
@@ -29,17 +30,17 @@ public class SettingsActivity extends AppCompatActivity {
             case MAIN:
                 preferenceFragment = new MainSettingsFragment();
                 break;
-//            case "medium":
-//                Log.i("SettingsActivity", "onCreate, case medium");
-//                String profile = intent.getStringExtra("medium_profile");
-//                int id = intent.getIntExtra("medium_id", -1);
-//                if((profile!=null)&&(id>=0)){
-//                    // media must be given
-//                    medium = MediumFactory.createMedium(profile, id);
-//                    preferenceFragment = medium.getSettingsFragment();
-//                }else{
-//                    finish();
-//                }
+            case MEDIUM:
+                Log.i("SettingsActivity", "onCreate, case medium");
+                String order = intent.getStringExtra(getString(R.string.intent_mediumOrder));
+                int id = intent.getIntExtra(getString(R.string.intent_mediumId), -1);
+                if((order!=null)&&(id>=0)){
+                    // media must be given
+                    medium = MediaFactory.createMedium(order, id);
+                    preferenceFragment = medium.getSettingsFragment();
+                }else{
+                    finish();
+                }
         }
         if (preferenceFragment != null){
             getSupportFragmentManager()
@@ -57,13 +58,14 @@ public class SettingsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         if(item.getItemId() == android.R.id.home){
             Log.i("SettingsActivity_Home", "settingsType:" + settingsType);
-//            if(settingsType.equals("medium")){
-//                Log.i("SettingsActivity_Home", "profile:" + medium.getProfileString() + ", id:" + medium.getId());
-//                Intent intent = new Intent();
-//                intent.putExtra("medium_profile", medium.getProfileString());
-//                intent.putExtra("medium_id", medium.getId());
-//                setResult(RESULT_OK, intent);
-//            }
+            if(settingsType == MEDIUM){
+                Log.i("SettingsActivity_Home", "profile:" + medium.getProfileString() + ", id:" + medium.getId());
+                Intent intent = new Intent();
+                intent.putExtra(getString(R.string.intent_mediumOrder),
+                        MediaFactory.makeOrderString(medium));
+                intent.putExtra(getString(R.string.intent_mediumId), medium.getId());
+                setResult(RESULT_OK, intent);
+            }
             finish();
         }
         return super.onOptionsItemSelected(item);

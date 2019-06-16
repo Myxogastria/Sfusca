@@ -6,13 +6,24 @@
     <string name="menu_settings">設定</string>
     <string name="tst_reload_err">%1$sの読み込みに失敗しました\n%2$s</string>
     <string name="tst_reload">再読み込み</string>
+    <string name="tst_media_full">メディアの最大数に達しました．スワイプでどれかを削除してください．</string>
+    <string name="tst_media_empty">少なくとも1つメディアを追加してください．</string>
 
     <string name="intent_settingsType"><xliff:g id="settingsType">settingsType</xliff:g></string>
+    <string name="intent_mediumOrder"><xliff:g id="mediumOrder">mediumOrder</xliff:g></string>
+    <string name="intent_mediumId"><xliff:g id="mediumId">mediumId</xliff:g></string>
 
-    <string name="pref_category_headline">ヘッドライン表示</string>
+    <string name="pref_category_title_headline">ヘッドライン表示</string>
+    <string name="pref_category_title_general">一般</string>
+
+    <string name="pref_category_article"><xliff:g id="categoryArticle">categoryArticle</xliff:g></string>
+    <string name="pref_category_title_article">記事表示</string>
 
     <string name="pref_media"><xliff:g id="media">media</xliff:g></string>
     <string name="pref_title_media">メディア設定</string>
+
+    <string name="pref_firstScrollDelay"><xliff:g id="firstScrollDelay">firstScrollDelay</xliff:g></string>
+    <string name="pref_title_firstScrollDelay">スクロール開始ウェイト（単位：100ミリ秒）</string>
 
     <string name="pref_autoScrollDelay"><xliff:g id="autoScrollDelay">autoScrollDelay</xliff:g></string>
     <string name="pref_title_autoScrollDelay">スクロール時間間隔（単位：100ミリ秒）</string>
@@ -29,5 +40,22 @@
     <string name="pref_headlineFontSize"><xliff:g id="headlineFontSize">headlineFontSize</xliff:g></string>
     <string name="pref_title_headlineFontSize">ヘッドラインフォントサイズ（単位：sp）</string>
 
+    <string name="pref_articleTitleFontSize"><xliff:g id="articleTitleFontSize">articleTitleFontSize</xliff:g></string>
+    <string name="pref_title_articleTitleFontSize">記事タイトルフォントサイズ（単位：sp）</string>
+
+    <string name="pref_articleFontSize"><xliff:g id="articleFontSize">articleFontSize</xliff:g></string>
+    <string name="pref_title_articleFontSize">記事フォントサイズ（単位：sp）</string>
+
+    <string name="pref_maxArticles"><xliff:g id="maxArticles">maxArticles</xliff:g></string>
+    <string name="pref_title_maxArticles">最大取得記事数</string>
+
+    <string name="pref_onlyFree"><xliff:g id="onlyFree">onlyFree</xliff:g></string>
+    <string name="pref_title_onlyFree">有料会員記事は取得しない</string>
+
+    <string name="dialog_title_add">追加するメディアを選択</string>
+    <string name="dialog_save_confirm_msg">変更を保存しますか？</string>
+    <string name="dialog_save_confirm_yes">保存</string>
+    <string name="dialog_save_confirm_no">変更を破棄</string>
+    <string name="dialog_save_confirm_cancel">キャンセル</string>
 
 </resources>

@@ -9,28 +9,33 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-public class SZ extends Medium {
+public class SZ {
     private static String NAME = "Süddeutche Zeitung";
     private static String URL = "http://www.sueddeutsche.de/news";
     private static String URL_PREFIX = "";
     private int maxSize = 5;
 
-    public SZ(){
-        super();
-    }
+    private boolean reloading;
+    private List<Article> articles;
+    private String DEFAULT_CONTENT;
 
-    public SZ(int maxSize){
-        super();
-        this.maxSize = maxSize;
-    }
+//    public SZ(){
+//        super();
+//    }
+//
+//    public SZ(int maxSize){
+//        super();
+//        this.maxSize = maxSize;
+//    }
 
-    @Override
+//    @Override
     public String getName() {
         return NAME;
     }
 
-    @Override
+//    @Override
     public void reload() throws IOException{
         Log.i("SZ", "reload");
         reloading = true;

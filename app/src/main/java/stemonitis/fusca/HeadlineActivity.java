@@ -31,7 +31,6 @@ import java.util.ListIterator;
 public final class HeadlineActivity extends AbstractCommonActivity {
     private int scrollDuration;
 
-    private List<Medium> mediaList;
     private ListIterator<Medium> mediaIterator;
     private Medium medium;
     private TextView title;
@@ -153,36 +152,6 @@ public final class HeadlineActivity extends AbstractCommonActivity {
                     }
                 });
 
-
-        mediaList = new ArrayList<>();
-        mediaList.add(new Nikkei(10));
-        mediaList.add(new Reuters(5));
-        mediaList.add(new SZ(5));
-        mediaList.add(new TechCrunch(5));
-        new AsyncReloader(mediaList).withExceptionToast(this).execute();
-
-        mediaIterator = mediaList.listIterator();
-        if(mediaIterator.hasNext()) {
-            medium = mediaIterator.next();
-        }
-
-        title = findViewById(R.id.tvHeadlineTitle);
-        title.setText(medium.getName());
-        title.setTextSize(mediaFontSize);
-
-        headlineListView = findViewById(R.id.lvHeadline);
-        headlineListView.setVerticalScrollBarEnabled(false);
-        headlineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                goToArticlesFrom(position);
-            }
-        });
-
-        headlineIsReady = false;
-        headlineHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
-
-        isActive = true;
     }
 
     private void loadPreference(){
@@ -369,7 +338,37 @@ public final class HeadlineActivity extends AbstractCommonActivity {
         super.onResume();
 
         loadPreference();
+
+//        mediaList = new ArrayList<>();
+//        mediaList.add(new Nikkei(10));
+//        mediaList.add(new Reuters(5));
+//        mediaList.add(new SZ(5));
+//        mediaList.add(new TechCrunch(5));
+//        mediaList = MediaFactory.createDefaultMedia();
+        List<Medium> mediaList = MediaFactory.resumeMedia(
+                PreferenceManager.getDefaultSharedPreferences(HeadlineActivity.this));
+        new AsyncReloader(mediaList).withExceptionToast(this).execute();
+
+        mediaIterator = mediaList.listIterator();
+        if(mediaIterator.hasNext()) {
+            medium = mediaIterator.next();
+        }
+
+        title = findViewById(R.id.tvHeadlineTitle);
+        title.setText(medium.getName());
         title.setTextSize(mediaFontSize);
+
+        headlineListView = findViewById(R.id.lvHeadline);
+        headlineListView.setVerticalScrollBarEnabled(false);
+        headlineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                goToArticlesFrom(position);
+            }
+        });
+
+        headlineIsReady = false;
+        headlineHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
 
         isActive = true;
     }

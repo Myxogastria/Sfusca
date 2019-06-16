@@ -9,28 +9,33 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-public class TechCrunch extends Medium {
+public class TechCrunch {
     private static String NAME = "TechCrunch";
     private static String URL = "https://techcrunch.com";
     private static String URL_PREFIX = "";
     private int maxSize = 10;
 
-    public TechCrunch() {
-        super();
-    }
+    private boolean reloading;
+    private List<Article> articles;
+    private String DEFAULT_CONTENT;
 
-    public TechCrunch(int maxSize){
-        super();
-        this.maxSize = maxSize;
-    }
-
-    @Override
+//    public TechCrunch() {
+//        super();
+//    }
+//
+//    public TechCrunch(int maxSize){
+//        super();
+//        this.maxSize = maxSize;
+//    }
+//
+//    @Override
     public String getName() {
         return NAME;
     }
 
-    @Override
+//    @Override
     public void reload() throws IOException{
         Log.i(NAME, "reload");
         reloading = true;

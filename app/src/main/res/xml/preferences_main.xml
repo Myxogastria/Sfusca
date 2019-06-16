@@ -21,7 +21,7 @@
         app:key="@string/pref_media"
         app:title="@string/pref_title_media"/>
 
-    <PreferenceCategory app:title="@string/pref_category_headline">
+    <PreferenceCategory app:title="@string/pref_category_title_headline">
 
 	    <SeekBarPreference
 	        app:key="@string/pref_autoScrollDelay"

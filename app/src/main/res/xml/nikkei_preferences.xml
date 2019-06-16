@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="@string/pref_category_title_general">
+
+        <SeekBarPreference
+            app:key="@string/pref_maxArticles"
+            app:title="@string/pref_title_maxArticles"
+            app:showSeekBarValue="true"
+            app:min="1"
+            android:max="100"
+            app:defaultValue="10"/>
+
+        <SwitchPreferenceCompat
+            app:key="@string/pref_onlyFree"
+            app:title="@string/pref_title_onlyFree"
+            app:summaryOff="有料会員記事の本文は途中までしか読み込まれません"
+            app:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="@string/pref_category_article"
+        app:title="@string/pref_category_title_article">
+
+        <SeekBarPreference
+            app:key="@string/pref_firstScrollDelay"
+            app:title="@string/pref_title_firstScrollDelay"
+            app:showSeekBarValue="true"
+            app:min="1"
+            android:max="600"
+            app:defaultValue="200"/>
+
+        <SeekBarPreference
+            app:key="@string/pref_autoScrollDelay"
+            app:title="@string/pref_title_autoScrollDelay"
+            app:showSeekBarValue="true"
+            app:min="1"
+            android:max="600"
+            app:defaultValue="150"/>
+
+        <SeekBarPreference
+            app:key="@string/pref_scrollDuration"
+            app:title="@string/pref_title_scrollDuration"
+            app:showSeekBarValue="true"
+            app:min="1"
+            android:max="50"
+            app:defaultValue="15"/>
+
+        <SeekBarPreference
+            app:key="@string/pref_scrollBy"
+            app:title="@string/pref_title_scrollBy"
+            app:showSeekBarValue="true"
+            app:min="1"
+            android:max="10"
+            app:defaultValue="3"/>
+
+        <SeekBarPreference
+            app:key="@string/pref_articleFontSize"
+            app:title="@string/pref_title_articleFontSize"
+            app:showSeekBarValue="true"
+            app:min="10"
+            android:max="100"
+            app:defaultValue="50"/>
+
+        <SeekBarPreference
+            app:key="@string/pref_articleTitleFontSize"
+            app:title="@string/pref_title_articleTitleFontSize"
+            app:showSeekBarValue="true"
+            app:min="10"
+            android:max="100"
+            app:defaultValue="60"/>
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>
