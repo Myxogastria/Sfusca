@@ -13,6 +13,11 @@
     <string name="intent_mediumOrder"><xliff:g id="mediumOrder">mediumOrder</xliff:g></string>
     <string name="intent_mediumId"><xliff:g id="mediumId">mediumId</xliff:g></string>
 
+    <string name="intent_autoChange"><xliff:g id="autoChange">autoChange</xliff:g></string>
+    <string name="intent_articleTitles"><xliff:g id="articleTitles">articleTitles</xliff:g></string>
+    <string name="intent_articleContents"><xliff:g id="articleContents">articleContents</xliff:g></string>
+    <string name="intent_articlePreferences"><xliff:g id="articlePreferences">articlePreferences</xliff:g></string>
+
     <string name="pref_category_title_headline">ヘッドライン表示</string>
     <string name="pref_category_title_general">一般</string>
 
@@ -32,7 +37,7 @@
     <string name="pref_title_scrollDuration">スクロール所要時間（単位：100ミリ秒）</string>
 
     <string name="pref_scrollBy"><xliff:g id="scrollBy">scrollBy</xliff:g></string>
-    <string name="pref_title_scrollBy">スクロール距離（単位：0.1画面）</string>
+    <string name="pref_title_scrollBy">スクロール距離（単位：約0.1画面）</string>
 
     <string name="pref_mediaFontSize"><xliff:g id="mediaFontSize">mediaFontSize</xliff:g></string>
     <string name="pref_title_mediaFontSize">メディア名フォントサイズ（単位：sp）</string>

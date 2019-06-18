@@ -4,6 +4,7 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ public abstract class Medium {
     protected static String DEFAULT_CONTENT = "Oops! No content.";
     protected List<Article> articles = new ArrayList<>();
     protected boolean reloading = true;
-    protected Map<String, Integer> articlePreferences = null;
+    protected HashMap<String, Integer> articlePreferences = null;
 
     protected Medium(int id){
         this.id = id;
@@ -52,7 +53,7 @@ public abstract class Medium {
         return reloading;
     };
 
-    public Map<String, Integer> getArticlePreferences(){
+    public HashMap<String, Integer> getArticlePreferences(){
         return articlePreferences;
     };
 

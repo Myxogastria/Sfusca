@@ -12,6 +12,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -32,12 +33,14 @@ public class ArticleActivity extends AbstractCommonActivity{
         finish();
     }
 
-    private static final int FIRST_SCROLL_DELAY = 20000;
+    private int firstScrollDelay = 20000;
+    private int scrollBy=3;
+    private static final int SCROLL_BY_DIVIDER = 10;
 
     private View lArticle;
     private ScrollView svArticle;
     private ProgressBar pbArticle;
-    private int scrollBy;
+    private int scrollDistance;
     private boolean autoChange;
     private Iterator<Article> articleIterator;
     private Article presentArticle;
@@ -88,11 +91,11 @@ public class ArticleActivity extends AbstractCommonActivity{
 
         Intent intent = getIntent();
 
-        autoChange = intent.getBooleanExtra("autoChange", true);
+        autoChange = intent.getBooleanExtra(getString(R.string.intent_autoChange), true);
         if (autoChange){
             ArrayList<Article> articles = new ArrayList<>();
-            Iterator<String> iTitle = intent.getStringArrayListExtra("titles").iterator();
-            Iterator<String> iContent = intent.getStringArrayListExtra("contents").iterator();
+            Iterator<String> iTitle = intent.getStringArrayListExtra(getString(R.string.intent_articleTitles)).iterator();
+            Iterator<String> iContent = intent.getStringArrayListExtra(getString(R.string.intent_articleContents)).iterator();
             while(iTitle.hasNext() && iContent.hasNext()){
                 Article a = new Article(iTitle.next());
                 a.setContent(iContent.next());
@@ -102,8 +105,25 @@ public class ArticleActivity extends AbstractCommonActivity{
             articleIterator = articles.iterator();
             presentArticle = articleIterator.next();
         }else{
-            presentArticle = new Article(intent.getStringExtra("title"));
-            presentArticle.setContent(intent.getStringExtra("content"));
+            presentArticle = new Article(intent.getStringExtra(getString(R.string.intent_articleTitles)));
+            presentArticle.setContent(intent.getStringExtra(getString(R.string.intent_articleContents)));
+        }
+
+        HashMap<String, Integer> articlePreferences = (HashMap<String, Integer>) intent.getSerializableExtra(getString(R.string.intent_articlePreferences));
+        if (articlePreferences.containsKey(getString(R.string.pref_firstScrollDelay))){
+            firstScrollDelay = articlePreferences.get(getString(R.string.pref_firstScrollDelay))*100;
+        }
+        if (articlePreferences.containsKey(getString(R.string.pref_autoScrollDelay))){
+            autoScrollDelay = articlePreferences.get(getString(R.string.pref_autoScrollDelay))*100;
+        }
+        if (articlePreferences.containsKey(getString(R.string.pref_scrollBy))){
+            scrollBy = articlePreferences.get(getString(R.string.pref_scrollBy));
+        }
+        if (articlePreferences.containsKey(getString(R.string.pref_articleFontSize))){
+            tvArticle.setTextSize(articlePreferences.get(getString(R.string.pref_articleFontSize)));
+        }
+        if (articlePreferences.containsKey(getString(R.string.pref_articleTitleFontSize))){
+            tvArticleTitle.setTextSize(articlePreferences.get(getString(R.string.pref_articleTitleFontSize)));
         }
 
         tvArticleTitle.setText(presentArticle.getTitle());
@@ -113,11 +133,11 @@ public class ArticleActivity extends AbstractCommonActivity{
 	        @Override
 	        public void run() {
 	            if(canScroll()){
-	                scrollBy = (svArticle.getChildAt(0).getMeasuredHeight() -
+	                scrollDistance = (svArticle.getChildAt(0).getMeasuredHeight() -
 	                        svArticle.getMeasuredHeight());
-	                scrollBy = lArticle.getHeight()/4;
+	                scrollDistance = lArticle.getHeight()*scrollBy/SCROLL_BY_DIVIDER;
 //	                this is different from AbsListView#smoothScrollBy
-	                svArticle.smoothScrollBy(0, scrollBy);
+	                svArticle.smoothScrollBy(0, scrollDistance);
 	                uiHandler.removeCallbacksAndMessages(null);
 	                uiHandler.postDelayed(this, autoScrollDelay);
 	            }else if (autoChange){
@@ -169,7 +189,7 @@ public class ArticleActivity extends AbstractCommonActivity{
         lArticle = findViewById(R.id.lArticle);
 
         uiHandler.removeCallbacksAndMessages(null);
-        uiHandler.postDelayed(autoScrollRunnable, FIRST_SCROLL_DELAY);
+        uiHandler.postDelayed(autoScrollRunnable, firstScrollDelay);
     }
 
     private void redrawArticle(){
@@ -186,7 +206,7 @@ public class ArticleActivity extends AbstractCommonActivity{
         pbArticle.setMax(svArticle.getChildAt(0).getMeasuredHeight() -
                 svArticle.getMeasuredHeight());
 
-        uiHandler.postDelayed(autoScrollRunnable, FIRST_SCROLL_DELAY);
+        uiHandler.postDelayed(autoScrollRunnable, firstScrollDelay);
     }
 
 }

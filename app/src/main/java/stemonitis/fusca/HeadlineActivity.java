@@ -184,7 +184,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
                 if(!medium.isReloading()) {
                     new AsyncReloader(medium).withExceptionToast(this).execute();
                     headlineIsReady = false;
-                    title.setText(medium.getName());
+                    title.setText(medium.getNameInHeadline());
                     headlineHandler.removeCallbacksAndMessages(null);
                     headlineHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
                 }
@@ -284,7 +284,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
             }
         }
         headlineIsReady = false;
-        title.setText(medium.getName());
+        title.setText(medium.getNameInHeadline());
         uiHandler.removeCallbacksAndMessages(null);
         headlineHandler.removeCallbacksAndMessages(null);
         headlineHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
@@ -303,7 +303,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
             }
         }
         headlineIsReady = false;
-        title.setText(medium.getName());
+        title.setText(medium.getNameInHeadline());
         uiHandler.removeCallbacksAndMessages(null);
         headlineHandler.removeCallbacksAndMessages(null);
         headlineHandler.postDelayed(headlineSetter, RELOAD_CHECK_INTERVAL);
@@ -323,9 +323,10 @@ public final class HeadlineActivity extends AbstractCommonActivity {
             }
 
             Intent intent = new Intent(HeadlineActivity.this, ArticleActivity.class);
-            intent.putExtra("autoChange", true);
-            intent.putStringArrayListExtra("titles", titles);
-            intent.putStringArrayListExtra("contents", contents);
+            intent.putExtra(getString(R.string.intent_autoChange), true);
+            intent.putStringArrayListExtra(getString(R.string.intent_articleTitles), titles);
+            intent.putStringArrayListExtra(getString(R.string.intent_articleContents), contents);
+            intent.putExtra(getString(R.string.intent_articlePreferences), medium.getArticlePreferences());
             startActivityForResult(intent, 0);
         }else{
             nextMedium();
@@ -355,7 +356,7 @@ public final class HeadlineActivity extends AbstractCommonActivity {
         }
 
         title = findViewById(R.id.tvHeadlineTitle);
-        title.setText(medium.getName());
+        title.setText(medium.getNameInHeadline());
         title.setTextSize(mediaFontSize);
 
         headlineListView = findViewById(R.id.lvHeadline);

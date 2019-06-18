@@ -165,6 +165,7 @@ public class Nikkei extends Medium implements SharedPreferences.OnSharedPreferen
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             Log.i(this.getClass().getCanonicalName(), "onCreatePreferences");
             setPreferencesFromResource(R.xml.nikkei_preferences, rootKey);
+            addPreferencesFromResource(R.xml.article_preferences);
 
             medium.setPreferenceManager(getPreferenceManager(),
                     PreferenceManager.getDefaultSharedPreferences(getContext()));
