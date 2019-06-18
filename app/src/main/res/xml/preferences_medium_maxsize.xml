@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="@string/pref_category_title_general">
+
+        <SeekBarPreference
+            app:key="@string/pref_maxArticles"
+            app:title="@string/pref_title_maxArticles"
+            app:showSeekBarValue="true"
+            app:min="1"
+            android:max="100"
+            app:defaultValue="10"/>
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

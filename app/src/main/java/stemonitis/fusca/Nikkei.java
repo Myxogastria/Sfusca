@@ -9,7 +9,6 @@ import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SeekBarPreference;
-import androidx.preference.SwitchPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
 import org.jsoup.Jsoup;
@@ -21,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Nikkei extends Medium implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class Nikkei extends Medium {
     private static String NAME = "日本経済新聞";
     private static String URL = "http://www.nikkei.com/news/category/";
     private static String URL_PREFIX = "http://www.nikkei.com";
@@ -164,8 +163,8 @@ public class Nikkei extends Medium implements SharedPreferences.OnSharedPreferen
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             Log.i(this.getClass().getCanonicalName(), "onCreatePreferences");
-            setPreferencesFromResource(R.xml.nikkei_preferences, rootKey);
-            addPreferencesFromResource(R.xml.article_preferences);
+            setPreferencesFromResource(R.xml.preferences_nikkei, rootKey);
+            addPreferencesFromResource(R.xml.preferences_article);
 
             medium.setPreferenceManager(getPreferenceManager(),
                     PreferenceManager.getDefaultSharedPreferences(getContext()));

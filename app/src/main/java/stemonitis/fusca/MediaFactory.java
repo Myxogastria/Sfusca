@@ -9,15 +9,16 @@ import java.util.Map;
 
 public final class MediaFactory {
     public static final String[] MENU_IN_DIALOG = {
-            "日本経済新聞"
+            "日本経済新聞",
+            "Reuters",
+            "Süddeutche Zeitung",
+            "TechCrunch"
     };
     public static final String[] MENU = {
-            Nikkei.class.getSimpleName()
-    };
-//            Nikkei.class.getSimpleName(),
-//            Reuters.class.getSimpleName(),
-//            SZ.class.getSimpleName(),
-//            TechCrunch.class.getSimpleName()};
+            Nikkei.class.getSimpleName(),
+            Reuters.class.getSimpleName(),
+            SZ.class.getSimpleName(),
+            TechCrunch.class.getSimpleName()};
 
     private MediaFactory(){
         throw new AssertionError();
@@ -39,12 +40,12 @@ public final class MediaFactory {
 
         if(mediumName.equals(Nikkei.class.getSimpleName())) {
             return new Nikkei(id, profileString);
-//        }else if(mediumName.equals(Reuters.class.getSimpleName())) {
-//            return new Reuters(id, profileString);
-//        }else if(mediumName.equals(SZ.class.getSimpleName())) {
-//            return new SZ(id, profileString);
-//        }else if(mediumName.equals(TechCrunch.class.getSimpleName())) {
-//            return new TechCrunch(id, profileString);
+        }else if(mediumName.equals(Reuters.class.getSimpleName())) {
+            return new Reuters(id, profileString);
+        }else if(mediumName.equals(SZ.class.getSimpleName())) {
+            return new SZ(id, profileString);
+        }else if(mediumName.equals(TechCrunch.class.getSimpleName())) {
+            return new TechCrunch(id, profileString);
         }else{
                 return null;
         }
@@ -53,9 +54,9 @@ public final class MediaFactory {
     public static List<Medium> createDefaultMedia(){
         List<Medium> media = new ArrayList<>();
         media.add(new Nikkei(0, ""));
-//        media.add(new Reuters(1, ""));
-//        media.add(new SZ(2, ""));
-//        media.add(new TechCrunch(3, ""));
+        media.add(new Reuters(1, ""));
+        media.add(new SZ(2, ""));
+        media.add(new TechCrunch(3, ""));
         return media;
     }
 
@@ -87,7 +88,7 @@ public final class MediaFactory {
     }
 
     public static List<Medium> resumeMedia(SharedPreferences sharedPreferences){
-        List<Medium> media = new ArrayList<>();
+        List<Medium> media;
 
         String idArrayString = sharedPreferences.getString("idArray", null);
         if(idArrayString!=null){

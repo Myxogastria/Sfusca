@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class MediaSortActivity extends AppCompatActivity {
-    private static final int MAX_MEDIA = 5;
+    private static final int MAX_MEDIA = 100;
     private static final int START_SETTINGS = 123;
 
     private List<Medium> media;

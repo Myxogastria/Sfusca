@@ -1,6 +1,13 @@
 package stemonitis.fusca;
 
+import android.content.SharedPreferences;
 import android.util.Log;
+
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+import androidx.preference.SeekBarPreference;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,33 +16,47 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
-public class Reuters {
+public class Reuters extends Medium{
     private static String NAME = "Reuters";
     private static String URL = "https://www.reuters.com/theWire";
     private static String URL_PREFIX = "";
-    private int maxSize = 5;
+    private int maxSize = 10;
 
-    private boolean reloading;
-    private List<Article> articles;
-    private String DEFAULT_CONTENT;
+    private PreferenceManager preferenceManager;
 
-//    public Reuters(){
-//        super();
-//    }
-//
-//    public Reuters(int maxSize){
-//        super();
-//        this.maxSize = maxSize;
-//    }
+    public Reuters(int id, String profileString){
+        super(id);
+        articlePreferences = new HashMap<>();
+        for (String str : profileString.split(",")){
+            String[] splitted = str.split("=", 2);
+            if(splitted.length == 2){
+                if (splitted[0].equals("maxSize")){
+                    maxSize = Integer.parseInt(splitted[1]);
+                }else{
+                    articlePreferences.put(splitted[0], Integer.parseInt(splitted[1]));
+                }
+            }
+        }
+    }
 
-//    @Override
+    @Override
+    public String getProfileString() {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (String key : articlePreferences.keySet()){
+            stringBuffer.append("," + key + "=" + articlePreferences.get(key));
+        }
+        return "maxSize=" + maxSize + stringBuffer.toString();
+    }
+
+
+    @Override
     public String getName() {
         return NAME;
     }
 
-//    @Override
+    @Override
     public void reload() throws IOException{
         Log.i(NAME, "reload");
         reloading = true;
@@ -89,5 +110,46 @@ public class Reuters {
             e.printStackTrace();
         }
         return content;
+    }
+
+    @Override
+    public PreferenceFragmentCompat getSettingsFragment() {
+        return new MaxSizePreferenceFragment(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals(getString(R.string.pref_maxArticles))){
+            maxSize = sharedPreferences.getInt(key, maxSize);
+        }else{
+            articlePreferences.put(key, sharedPreferences.getInt(key,
+                    articlePreferences.get(key)));
+        }
+    }
+
+    @Override
+    public void setPreferenceManager(PreferenceManager preferenceManager, SharedPreferences sharedPreferences) {
+        this.preferenceManager = preferenceManager;
+
+        for (String key : articlePreferences.keySet()){
+            Preference preference = this.preferenceManager.findPreference(key);
+            if(preference != null){
+                if(preference instanceof SeekBarPreference){
+                    ((SeekBarPreference) preference).setValue(articlePreferences.get(key));
+                }
+            }
+        }
+        PreferenceCategory articleCategory = (PreferenceCategory) this.preferenceManager.findPreference(
+                getString(R.string.pref_category_article));
+        for (int i = 0; i < articleCategory.getPreferenceCount(); i++){
+            Preference preference = articleCategory.getPreference(i);
+            if (!articlePreferences.keySet().contains(preference.getKey())){
+                articlePreferences.put(preference.getKey(),
+                        sharedPreferences.getInt(preference.getKey(), -1));
+            }
+        }
+
+        ((SeekBarPreference) this.preferenceManager.findPreference(getString(R.string.pref_maxArticles)))
+                .setValue(maxSize);
     }
 }

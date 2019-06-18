@@ -1,6 +1,9 @@
 package stemonitis.fusca;
 
+import android.content.SharedPreferences;
+
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Medium {
+public abstract class Medium implements SharedPreferences.OnSharedPreferenceChangeListener {
     protected final int id;
 
     protected static String DEFAULT_CONTENT = "Oops! No content.";
@@ -21,9 +24,11 @@ public abstract class Medium {
     }
 
     public abstract String getProfileString();
-    public abstract PreferenceFragmentCompat getSettingsFragment();
     public abstract String getName();
     public abstract void reload() throws IOException;
+
+    public abstract PreferenceFragmentCompat getSettingsFragment();
+    public abstract void setPreferenceManager(PreferenceManager preferenceManager, SharedPreferences sharedPreferences);
 
     public int getId(){
         return id;
